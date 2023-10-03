@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block content %}
+<div class="flex w-full h-full items-center justify-center">
+    <form method="POST" class="w-[400px]">
+        {% csrf_token %}
+        <div class="flex flex-col gap-y-4">
+            <input type="text" name="username" maxlength="150" autocapitalize="none" autocomplete="username"
+                autofocus="" required="" id="id_username" placeholder="username"
+                class="outline-gray-100 w-full rounded-3xl pl-4 text-blue-500 py-1">
+            <input type="password" name="password1" autocomplete="new-password" required="" id="id_password1"
+                placeholder="password" class="outline-gray-100 w-full rounded-3xl pl-4 text-blue-500 py-1">
+            <ul class="pl-10 list-disc">
+                <li>Your password can’t be too similar to your other personal information.</li>
+                <li>Your password must contain at least 8 characters.</li>
+                <li>Your password can’t be a commonly used password.</li>
+                <li>Your password can’t be entirely numeric.</li>
+            </ul>
+            <input type="password" name="password2" autocomplete="new-password" required="" id="id_password2"
+                placeholder="confirm password" class="outline-gray-100 w-full rounded-3xl pl-4 text-blue-500 py-1">
+            <div class="flex justify-center"> <button type="submit"
+                    class="py-2 px-5 bg-blue-500 rounded-3xl text-white">Register</button> </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

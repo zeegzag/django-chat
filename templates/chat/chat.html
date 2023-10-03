@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex items-center h-full">
+    <div class="container mx-auto h-[800px] bg-blue-200 rounded-lg shadow-lg flex flex-row">
+        <div class="basis-1/4 p-5 flex flex-col gap-y-8">
+            <div class="flex flex-row gap-x-2">
+                <div class="w-18 h-[72px] rounded-full bg-white basis-[72px]"></div>
+                <div class="h-18 flex items-center text-blue-500 font-bold text-xl flex-1">
+                    {{ username }}
+                </div>
+            </div>
+            <div class="relative">
+                <i
+                    class="fa-thin fa-magnifying-glass text-inherit absolute top-[8px] left-[8px] !text-gray-400 font-bold"></i>
+                <input class="outline-gray-100 w-full rounded-3xl pl-8 pr-4 text-blue-500 py-1"
+                    placeholder="Search Friends" />
+            </div>
+        </div>
+        <div class="basis-1/2 bg-blue-100 p-5 flex flex-col gap-y-4">
+            <div>
+                <div class="flex flex-row gap-x-4">
+                    <div class="w-18 h-[72px] rounded-full bg-white basis-[72px]"></div>
+                    <div class="h-18 flex items-center text-blue-500 font-bold text-xl flex-1">
+                        {{ username }}
+                    </div>
+                </div>
+            </div>
+            <form id="chatForm" class="flex flex-col gap-y-4 h-full">
+                <div class="form-group h-full">
+                    <label for="text" class="h4 pt-5 hidden" id="username">{{ username }}</label>
+                    <textarea class="form-control w-full p-3 resize-none rounded-lg h-full" id="chat-text" readonly
+                        rows="10"></textarea><br>
+                </div>
+                <div class="relative form-group">
+                    <div
+                        class="absolute top-[-4px] right-[-3px] flex items-center justify-center w-10 h-10 rounded-full bg-blue-500">
+                        <input class="btn btn-primary btn-lg btn-block text-white" type="submit" value=">">
+                    </div>
+
+                    <input class="form-control outline-gray-100 w-full rounded-3xl pl-4 text-blue-500 py-1"
+                        placeholder="Write Something" id="input" type="text" />
+                </div>
+            </form>
+        </div>
+        <div class="basis-1/4 p-5">
+            <!-- <div class="flex flex-row gap-x-4">
+                <div class="w-18 h-[72px] rounded-full bg-white basis-[72px]"></div>
+                <div class="h-18 flex items-center text-blue-500 font-bold text-xl flex-1">
+                    {{ username }}
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts%}
+<script>
+    const username = document.getElementById('username').innerHTML;
+    document.querySelector('#chatForm').onsubmit = function (e) {
+        e.preventDefault();
+        const messageInputDom = document.querySelector('#input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'username': username,
+        }));
+        messageInputDom.value = '';
+    };
+
+    // # Create a WebSocket in JavaScript.
+    const chatSocket = new WebSocket(
+        'ws://' +
+        window.location.host +
+        '/ws/chat/'
+    );
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat-text').value += (data.message + ' sent by ' + data.username + '\n') // add message to text box
+    }
+</script>
+{% endblock %}
