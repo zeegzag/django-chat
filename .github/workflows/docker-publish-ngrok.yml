@@ -10,9 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
     
-      - name: Run container
-        run: docker-compose up -d
-      
       - name: Ngrok Tunnel Action
         uses: LuisBoto/ngrok-tunnel-action@v0.1.7.2
         with:
@@ -22,3 +19,7 @@ jobs:
           ngrok_authtoken: 2WLQGNHgnHIWYm5K2tuafAcJeZR_5BZcSjFbqu1sHmNNkW3yB
           tunnel_type: http
           save_url_to_filename: tunnelURL.md
+
+      - name: Run container
+        run: docker-compose up
+      
