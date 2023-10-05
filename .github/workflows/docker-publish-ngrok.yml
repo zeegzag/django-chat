@@ -1,0 +1,30 @@
+name: Docker Publish Ngrok
+
+on:
+  schedule:
+    - cron: '35 14 * * *'
+  push:
+    branches: [ "main" ]
+    # Publish semver tags as releases.
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
+        # need checkout before using compose-action
+        - uses: actions/checkout@v3
+        - uses: isbang/compose-action@v1.5.1
+          with:
+            compose-file: "./docker-compose.yml"
+            down-flags: "--volumes"
