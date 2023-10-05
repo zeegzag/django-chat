@@ -1,30 +1,24 @@
-name: Docker Publish Ngrok
-
-on:
-  schedule:
-    - cron: '35 14 * * *'
-  push:
-    branches: [ "main" ]
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ "main" ]
+name: CI
+on: push
 
 jobs:
-  build:
 
+  deploy:
+    name: Docker container with Ngrok tunnel
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
+    needs: cancel
 
     steps:
-        # need checkout before using compose-action
-        - uses: actions/checkout@v3
-        - uses: isbang/compose-action@v1.5.1
-          with:
-            compose-file: "./docker-compose.yml"
-            down-flags: "--volumes"
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Run container
+      run: docker-compose up
+    
+    - uses: luisboto/ngrok-tunnel-action@latest
+      with:
+        timeout: 1h
+        port: 8000
+        ngrok_authtoken: ${{ secrets.NGROK_AUTHTOKEN }}
+        tunnel_type: http
+        save_url_to_filename: tunnelURL.md
