@@ -15,7 +15,8 @@ jobs:
     - name: Run container
       run: docker-compose up
     
-    - uses: luisboto/ngrok-tunnel-action@latest
+    - name: Ngrok Tunnel Action
+      uses: LuisBoto/ngrok-tunnel-action@v0.1.7.2
       with:
         timeout: 1h
         port: 8000
